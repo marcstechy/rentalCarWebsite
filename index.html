@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Horizone — Rent a Car for Every Journey</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0c10;
+    --surface: #13161d;
+    --surface2: #1c2029;
+    --border: rgba(255,255,255,0.07);
+    --accent: #e8ff47;
+    --accent2: #ff6b35;
+    --text: #f0f2f5;
+    --muted: #6b7280;
+    --card-bg: #151820;
+    --nav-h: 64px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    height: var(--nav-h);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%;
+    background: rgba(10,12,16,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800; font-size: 1.3rem;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    display: flex; align-items: center; gap: 6px;
+    text-decoration: none;
+  }
+  .logo span { color: var(--text); }
+
+  .nav-links {
+    display: flex; align-items: center; gap: 2rem;
+    list-style: none;
+  }
+  .nav-links a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.875rem; font-weight: 500;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-actions { display: flex; align-items: center; gap: 0.75rem; }
+  .btn-ghost {
+    background: none; border: 1px solid var(--border);
+    color: var(--text); padding: 8px 18px; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+    cursor: pointer; transition: border-color 0.2s, color 0.2s;
+    text-decoration: none;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  .btn-accent {
+    background: var(--accent); color: #0a0c10;
+    border: none; padding: 9px 20px; border-radius: 8px;
+    font-family: 'Syne', sans-serif; font-size: 0.85rem; font-weight: 700;
+    cursor: pointer; transition: opacity 0.2s, transform 0.15s;
+    text-decoration: none;
+  }
+  .btn-accent:hover { opacity: 0.88; transform: translateY(-1px); }
+
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    background: none; border: none; cursor: pointer; padding: 4px;
+  }
+  .hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--text); border-radius: 2px;
+    transition: all 0.3s;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    position: relative; min-height: 100vh;
+    display: flex; align-items: center;
+    padding: var(--nav-h) 5% 0;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 70% 60% at 60% 50%, rgba(232,255,71,0.06) 0%, transparent 60%),
+                radial-gradient(ellipse 50% 40% at 80% 70%, rgba(255,107,53,0.05) 0%, transparent 50%),
+                linear-gradient(135deg, #0a0c10 0%, #111420 100%);
+  }
+
+  .hero-grid-lines {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  .hero-content {
+    position: relative; z-index: 2;
+    max-width: 600px;
+    animation: fadeUp 0.9s cubic-bezier(0.16,1,0.3,1) both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(32px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(232,255,71,0.1); border: 1px solid rgba(232,255,71,0.2);
+    color: var(--accent); font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 999px; margin-bottom: 1.5rem;
+  }
+  .hero-tag::before { content: '●'; font-size: 0.5rem; }
+
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(2.6rem, 6vw, 4.5rem);
+    font-weight: 800; line-height: 1.05;
+    letter-spacing: -1.5px;
+    margin-bottom: 1.25rem;
+  }
+  .hero h1 em { color: var(--accent); font-style: normal; }
+
+  .hero p {
+    font-size: 1.05rem; color: var(--muted);
+    line-height: 1.7; max-width: 460px;
+    margin-bottom: 2rem; font-weight: 300;
+  }
+
+  .hero-cta { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 3rem; }
+
+  .btn-primary {
+    background: var(--accent); color: #0a0c10;
+    border: none; padding: 14px 28px; border-radius: 10px;
+    font-family: 'Syne', sans-serif; font-size: 0.9rem; font-weight: 700;
+    cursor: pointer; transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px;
+    text-decoration: none;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(232,255,71,0.25); }
+
+  .btn-secondary {
+    background: var(--surface2); color: var(--text);
+    border: 1px solid var(--border); padding: 14px 28px; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn-secondary:hover { border-color: rgba(255,255,255,0.2); }
+
+  .hero-stats {
+    display: flex; gap: 2.5rem; flex-wrap: wrap;
+  }
+  .stat { }
+  .stat-num {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.6rem; font-weight: 800;
+    color: var(--accent); display: block;
+  }
+  .stat-label { font-size: 0.78rem; color: var(--muted); }
+
+  .hero-car {
+    position: absolute; right: -4%; bottom: 0;
+    width: 60%; max-width: 780px;
+    animation: slideIn 1.1s cubic-bezier(0.16,1,0.3,1) 0.2s both;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(60px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .hero-car img { width: 100%; display: block; }
+  .hero-car-glow {
+    position: absolute; bottom: -60px; left: 10%; right: 10%; height: 140px;
+    background: radial-gradient(ellipse, rgba(232,255,71,0.18) 0%, transparent 70%);
+    filter: blur(20px);
+  }
+
+  /* ── SEARCH BAR ── */
+  .search-section {
+    position: relative; z-index: 10;
+    padding: 0 5%; margin-top: -60px;
+  }
+
+  .search-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px 28px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)) auto;
+    gap: 16px; align-items: end;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.5);
+  }
+
+  .field label {
+    display: block; font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 8px;
+  }
+  .field input, .field select {
+    width: 100%; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem; padding: 10px 14px;
+    outline: none; transition: border-color 0.2s;
+    appearance: none;
+  }
+  .field input:focus, .field select:focus { border-color: rgba(232,255,71,0.4); }
+  .field input::placeholder { color: var(--muted); }
+
+  .search-btn {
+    background: var(--accent); color: #0a0c10;
+    border: none; border-radius: 10px; padding: 12px 28px;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem;
+    cursor: pointer; white-space: nowrap; transition: all 0.2s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .search-btn:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(232,255,71,0.3); }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 80px 5%; }
+
+  .section-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    margin-bottom: 2.5rem; gap: 1rem; flex-wrap: wrap;
+  }
+  .section-label {
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 6px;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 800; letter-spacing: -0.5px;
+  }
+  .section-sub { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+  .see-all {
+    color: var(--accent); font-size: 0.85rem; font-weight: 600;
+    text-decoration: none; display: flex; align-items: center; gap: 4px;
+    white-space: nowrap; transition: gap 0.2s;
+  }
+  .see-all:hover { gap: 8px; }
+
+  /* ── FILTERS ── */
+  .filters {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 2rem;
+  }
+  .filter-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); border-radius: 999px; padding: 7px 16px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .filter-btn:hover, .filter-btn.active {
+    background: var(--accent); border-color: var(--accent);
+    color: #0a0c10; font-weight: 700;
+  }
+
+  /* ── CAR CARDS ── */
+  .cars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+
+  .car-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-radius: 14px; overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+    cursor: pointer;
+  }
+  .car-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 48px rgba(0,0,0,0.5);
+    border-color: rgba(232,255,71,0.2);
+  }
+
+  .car-type-badge {
+    display: inline-block;
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--muted);
+    padding: 16px 16px 0;
+  }
+
+  .car-img-wrap {
+    padding: 12px 16px 8px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.02) 0%, transparent 100%);
+  }
+  .car-img-wrap img {
+    width: 100%; height: 140px; object-fit: contain;
+    transition: transform 0.3s;
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.4));
+  }
+  .car-card:hover .car-img-wrap img { transform: scale(1.04); }
+
+  .car-info { padding: 12px 16px 16px; }
+  .car-name {
+    font-family: 'Syne', sans-serif; font-size: 1rem;
+    font-weight: 700; margin-bottom: 6px;
+  }
+  .car-meta {
+    display: flex; gap: 10px; align-items: center;
+    font-size: 0.75rem; color: var(--muted); margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+  .car-meta span { display: flex; align-items: center; gap: 3px; }
+  .car-meta svg { opacity: 0.6; }
+
+  .car-footer {
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .car-price { font-family: 'Syne', sans-serif; font-size: 1.05rem; font-weight: 800; }
+  .car-price small { font-family: 'DM Sans'; font-size: 0.72rem; font-weight: 400; color: var(--muted); }
+  .rent-btn {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--text); padding: 7px 14px; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .rent-btn:hover { background: var(--accent); color: #0a0c10; border-color: var(--accent); font-weight: 700; }
+
+  .rating {
+    display: flex; align-items: center; gap: 3px;
+    font-size: 0.75rem; color: #fbbf24;
+  }
+
+  /* ── DESTINATIONS ── */
+  .destinations { background: var(--surface); }
+
+  .dest-scroll {
+    display: flex; gap: 12px;
+    overflow-x: auto; padding-bottom: 8px;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  }
+  .dest-scroll::-webkit-scrollbar { height: 4px; }
+  .dest-scroll::-webkit-scrollbar-track { background: transparent; }
+  .dest-scroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+  .dest-chip {
+    flex-shrink: 0;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 18px;
+    font-size: 0.82rem; font-weight: 500; color: var(--muted);
+    cursor: pointer; white-space: nowrap;
+    transition: all 0.2s;
+  }
+  .dest-chip:hover {
+    background: rgba(232,255,71,0.08);
+    border-color: rgba(232,255,71,0.3);
+    color: var(--accent);
+  }
+
+  /* ── DEALS ── */
+  .deals-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .deal-card {
+    border-radius: 14px; overflow: hidden;
+    position: relative; min-height: 180px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: 20px;
+    border: 1px solid var(--border);
+    transition: transform 0.25s;
+    cursor: pointer;
+  }
+  .deal-card:hover { transform: translateY(-4px); }
+  .deal-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(to top, rgba(10,12,16,0.9) 0%, rgba(10,12,16,0.3) 100%);
+    z-index: 1;
+  }
+  .deal-card .bg {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, #1a2a0a 0%, #0d1a1a 100%);
+  }
+  .deal-card:nth-child(2) .bg { background: linear-gradient(135deg, #2a1a0a 0%, #1a0d0d 100%); }
+  .deal-card:nth-child(3) .bg { background: linear-gradient(135deg, #0a1a2a 0%, #0d0d1a 100%); }
+  .deal-card-content { position: relative; z-index: 2; }
+  .deal-pct {
+    font-family: 'Syne', sans-serif;
+    font-size: 3rem; font-weight: 800;
+    color: var(--accent); line-height: 1;
+    margin-bottom: 4px;
+  }
+  .deal-title { font-size: 0.85rem; color: rgba(255,255,255,0.7); }
+  .deal-badge {
+    position: absolute; top: 16px; right: 16px; z-index: 2;
+    background: var(--accent); color: #0a0c10;
+    font-size: 0.65rem; font-weight: 800; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 4px 10px; border-radius: 999px;
+  }
+
+  /* ── BRANDS ── */
+  .brands { padding: 40px 5%; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .brands-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 3rem; flex-wrap: wrap;
+  }
+  .brand-name {
+    font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700;
+    color: var(--muted); letter-spacing: 0.05em; opacity: 0.5;
+    transition: opacity 0.2s;
+    cursor: default;
+  }
+  .brand-name:hover { opacity: 1; color: var(--text); }
+
+  /* ── HOW IT WORKS ── */
+  .how-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+  }
+  .how-card {
+    background: var(--card-bg); border: 1px solid var(--border);
+    border-radius: 14px; padding: 28px 24px;
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .how-card:hover { border-color: rgba(232,255,71,0.25); }
+  .how-num {
+    font-family: 'Syne', sans-serif; font-size: 4rem; font-weight: 800;
+    color: rgba(232,255,71,0.07); line-height: 1;
+    position: absolute; top: 12px; right: 16px;
+  }
+  .how-icon {
+    width: 44px; height: 44px; border-radius: 10px;
+    background: rgba(232,255,71,0.1); display: flex; align-items: center; justify-content: center;
+    margin-bottom: 16px; font-size: 1.3rem;
+  }
+  .how-card h3 {
+    font-family: 'Syne', sans-serif; font-size: 1rem;
+    font-weight: 700; margin-bottom: 8px;
+  }
+  .how-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+  /* ── CTA BANNER ── */
+  .cta-banner {
+    margin: 0 5% 80px;
+    background: linear-gradient(135deg, rgba(232,255,71,0.08) 0%, rgba(255,107,53,0.05) 100%);
+    border: 1px solid rgba(232,255,71,0.15);
+    border-radius: 20px; padding: 56px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 2rem; flex-wrap: wrap; position: relative; overflow: hidden;
+  }
+  .cta-banner::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(232,255,71,0.08) 0%, transparent 70%);
+  }
+  .cta-banner h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
+    font-weight: 800; letter-spacing: -0.5px;
+    margin-bottom: 8px;
+  }
+  .cta-banner p { color: var(--muted); font-size: 0.9rem; max-width: 400px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 56px 5% 24px;
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr repeat(3, 1fr) 1fr;
+    gap: 3rem; margin-bottom: 48px;
+  }
+  .footer-brand p {
+    color: var(--muted); font-size: 0.83rem;
+    line-height: 1.7; margin: 12px 0 20px;
+    max-width: 240px;
+  }
+  .newsletter { display: flex; gap: 8px; }
+  .newsletter input {
+    flex: 1; background: var(--surface2);
+    border: 1px solid var(--border); border-radius: 8px;
+    color: var(--text); padding: 9px 14px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.83rem;
+    outline: none;
+  }
+  .newsletter input::placeholder { color: var(--muted); }
+  .newsletter input:focus { border-color: rgba(232,255,71,0.4); }
+  .newsletter button {
+    background: var(--accent); color: #0a0c10;
+    border: none; border-radius: 8px; padding: 9px 14px;
+    font-family: 'Syne', sans-serif; font-weight: 700;
+    font-size: 0.78rem; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .newsletter button:hover { opacity: 0.85; }
+
+  .footer-col h4 {
+    font-family: 'Syne', sans-serif; font-size: 0.85rem;
+    font-weight: 700; margin-bottom: 16px;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 10px; }
+  .footer-col a {
+    color: var(--muted); text-decoration: none;
+    font-size: 0.82rem; transition: color 0.2s;
+  }
+  .footer-col a:hover { color: var(--text); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border); padding-top: 24px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-bottom p { font-size: 0.78rem; color: var(--muted); }
+  .footer-links { display: flex; gap: 1.5rem; }
+  .footer-links a { color: var(--muted); font-size: 0.78rem; text-decoration: none; }
+  .footer-links a:hover { color: var(--text); }
+
+  /* ── MOBILE NAV ── */
+  .mobile-menu {
+    display: none; position: fixed; top: var(--nav-h); left: 0; right: 0;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 20px 5%; z-index: 99; flex-direction: column; gap: 16px;
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu a {
+    color: var(--muted); text-decoration: none; font-size: 0.9rem;
+    padding: 8px 0; border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+  .mobile-menu a:last-child { border: none; }
+  .mobile-menu a:hover { color: var(--text); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero-car { width: 75%; right: -8%; bottom: 30px; opacity: 0.5; }
+    .hero-content { max-width: 100%; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .footer-brand { grid-column: 1 / -1; }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-actions { display: none; }
+    .hamburger { display: flex; }
+    .hero { min-height: 90vh; align-items: center; }
+    .hero-car { display: none; }
+    .hero h1 { letter-spacing: -1px; }
+    .search-card { grid-template-columns: 1fr 1fr; }
+    .search-card > *:nth-child(3), .search-card > *:nth-child(4) { display: none; }
+    section { padding: 60px 5%; }
+    .cta-banner { padding: 36px 28px; text-align: center; justify-content: center; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 2rem; }
+  }
+
+  @media (max-width: 480px) {
+    .search-card { grid-template-columns: 1fr; }
+    .search-card > *:nth-child(3), .search-card > *:nth-child(4) { display: block; }
+    .hero-stats { gap: 1.5rem; }
+    .footer-grid { grid-template-columns: 1fr; }
+    .brands-row { gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">⬡ Horiz<span>one</span></a>
+  <ul class="nav-links">
+    <li><a href="#">Hotel</a></li>
+    <li><a href="#">Flight</a></li>
+    <li><a href="#">Tour</a></li>
+    <li><a href="#" style="color:var(--accent)">Car Rental</a></li>
+  </ul>
+  <div class="nav-actions">
+    <a href="#" class="btn-ghost">Log In</a>
+    <a href="#" class="btn-accent">Sign Up</a>
+  </div>
+  <button class="hamburger" onclick="toggleMenu()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#">Hotel</a>
+  <a href="#">Flight</a>
+  <a href="#">Tour</a>
+  <a href="#">Car Rental</a>
+  <a href="#">Log In</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid-lines"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Premium Car Rental</div>
+    <h1>Rent a Car for <em>Every</em> Journey</h1>
+    <p>Experience the epitome of amazing journey with our curated fleet. From city cruisers to luxury SUVs — your perfect ride awaits.</p>
+    <div class="hero-cta">
+      <a href="#search" class="btn-primary">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Find a Car
+      </a>
+      <a href="#cars" class="btn-secondary">
+        View Fleet
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <span class="stat-num">3,490+</span>
+        <span class="stat-label">Vehicles Available</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">120+</span>
+        <span class="stat-label">Cities Worldwide</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">98%</span>
+        <span class="stat-label">Happy Customers</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-car">
+    <div class="hero-car-glow"></div>
+    <!-- SVG Car Illustration -->
+    <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 20px 60px rgba(232,255,71,0.15))">
+      <defs>
+        <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#2a2d35"/>
+          <stop offset="50%" stop-color="#1a1d24"/>
+          <stop offset="100%" stop-color="#0f1116"/>
+        </linearGradient>
+        <linearGradient id="glassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="rgba(100,160,220,0.6)"/>
+          <stop offset="100%" stop-color="rgba(60,100,160,0.3)"/>
+        </linearGradient>
+        <linearGradient id="rimGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#444"/>
+          <stop offset="100%" stop-color="#222"/>
+        </linearGradient>
+        <filter id="glow">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+      </defs>
+      <!-- Shadow -->
+      <ellipse cx="350" cy="295" rx="280" ry="20" fill="rgba(0,0,0,0.5)"/>
+      <!-- Body -->
+      <path d="M80 220 L80 190 Q85 185 100 180 L180 155 Q220 135 280 128 L380 125 Q440 124 480 128 L560 150 Q600 165 620 185 L630 200 L630 220 Z" fill="url(#bodyGrad)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <!-- Roof -->
+      <path d="M200 175 Q230 145 280 130 L380 127 Q430 126 470 132 L530 155 L190 165 Z" fill="#1e2130" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+      <!-- Windshield -->
+      <path d="M270 165 Q272 136 308 130 L375 127 L390 165 Z" fill="url(#glassGrad)" opacity="0.85"/>
+      <!-- Rear window -->
+      <path d="M405 165 L420 128 L470 133 L510 155 L480 165 Z" fill="url(#glassGrad)" opacity="0.7"/>
+      <!-- Side body accent -->
+      <path d="M95 210 L620 210" stroke="rgba(232,255,71,0.15)" stroke-width="1.5"/>
+      <!-- Door lines -->
+      <line x1="330" y1="170" x2="335" y2="218" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <line x1="460" y1="168" x2="460" y2="218" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+      <!-- Front bumper -->
+      <path d="M80 218 Q70 222 68 230 L78 235 L100 225 Z" fill="#141720"/>
+      <!-- Rear bumper -->
+      <path d="M620 218 Q635 222 638 230 L626 235 L608 225 Z" fill="#141720"/>
+      <!-- Headlights -->
+      <rect x="82" y="196" width="28" height="10" rx="4" fill="rgba(232,255,71,0.8)" filter="url(#glow)"/>
+      <rect x="84" y="197" width="22" height="7" rx="3" fill="rgba(255,255,220,0.95)"/>
+      <!-- Taillights -->
+      <rect x="598" y="196" width="24" height="10" rx="4" fill="rgba(255,50,50,0.85)" filter="url(#glow)"/>
+      <!-- Wheels -->
+      <!-- Front wheel -->
+      <circle cx="195" cy="253" r="42" fill="#111" stroke="#333" stroke-width="2"/>
+      <circle cx="195" cy="253" r="34" fill="url(#rimGrad)"/>
+      <circle cx="195" cy="253" r="26" fill="#0d0f14"/>
+      <circle cx="195" cy="253" r="8" fill="#2a2d35"/>
+      <!-- Spokes -->
+      <line x1="195" y1="220" x2="195" y2="286" stroke="#555" stroke-width="2.5"/>
+      <line x1="162" y1="237" x2="228" y2="269" stroke="#555" stroke-width="2.5"/>
+      <line x1="162" y1="269" x2="228" y2="237" stroke="#555" stroke-width="2.5"/>
+      <!-- Rear wheel -->
+      <circle cx="515" cy="253" r="42" fill="#111" stroke="#333" stroke-width="2"/>
+      <circle cx="515" cy="253" r="34" fill="url(#rimGrad)"/>
+      <circle cx="515" cy="253" r="26" fill="#0d0f14"/>
+      <circle cx="515" cy="253" r="8" fill="#2a2d35"/>
+      <line x1="515" y1="220" x2="515" y2="286" stroke="#555" stroke-width="2.5"/>
+      <line x1="482" y1="237" x2="548" y2="269" stroke="#555" stroke-width="2.5"/>
+      <line x1="482" y1="269" x2="548" y2="237" stroke="#555" stroke-width="2.5"/>
+      <!-- Accent stripe -->
+      <path d="M100 195 L600 195" stroke="rgba(232,255,71,0.2)" stroke-width="1"/>
+    </svg>
+  </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-section" id="search">
+  <div class="search-card">
+    <div class="field">
+      <label>📍 Departure</label>
+      <input type="text" placeholder="City, airport or station">
+    </div>
+    <div class="field">
+      <label>🏁 Return Location</label>
+      <input type="text" placeholder="City, airport or station">
+    </div>
+    <div class="field">
+      <label>📅 Pick Up Date</label>
+      <input type="date" value="2024-01-14">
+    </div>
+    <div class="field">
+      <label>📅 Return Date</label>
+      <input type="date" value="2024-01-19">
+    </div>
+    <button class="search-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Search
+    </button>
+  </div>
+</div>
+
+<!-- TOP PICKS -->
+<section id="cars">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Fleet Showcase</div>
+      <div class="section-title">Top Picks This Month</div>
+      <div class="section-sub">Experience the epitome of amazing journey with our top picks.</div>
+    </div>
+    <a href="#" class="see-all">See More →</a>
+  </div>
+  <div class="filters">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Hatchback</button>
+    <button class="filter-btn">Minivan</button>
+    <button class="filter-btn">SUV</button>
+    <button class="filter-btn">Sedan</button>
+    <button class="filter-btn">MPV</button>
+  </div>
+  <div class="cars-grid">
+
+    <!-- Card 1 -->
+    <div class="car-card">
+      <div class="car-type-badge">Hatchback</div>
+      <div class="car-img-wrap">
+        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg" style="height:130px;width:100%">
+          <defs><linearGradient id="c1" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#c0c0c0"/><stop offset="100%" stop-color="#808080"/></linearGradient></defs>
+          <ellipse cx="150" cy="118" rx="130" ry="8" fill="rgba(0,0,0,0.3)"/>
+          <path d="M30 88 L30 70 Q35 65 50 60 L100 48 Q120 42 148 40 L175 40 Q210 40 230 48 L260 60 Q270 65 272 72 L272 88 Z" fill="url(#c1)"/>
+          <path d="M70 68 Q78 50 108 44 L175 41 L185 68 Z" fill="rgba(100,160,220,0.7)"/>
+          <path d="M190 68 L198 43 L230 50 L250 65 L235 68 Z" fill="rgba(100,160,220,0.5)"/>
+          <circle cx="85" cy="100" r="18" fill="#111"/><circle cx="85" cy="100" r="14" fill="#333"/><circle cx="85" cy="100" r="9" fill="#111"/>
+          <circle cx="225" cy="100" r="18" fill="#111"/><circle cx="225" cy="100" r="14" fill="#333"/><circle cx="225" cy="100" r="9" fill="#111"/>
+        </svg>
+      </div>
+      <div class="car-info">
+        <div class="car-name">Toyota Yaris</div>
+        <div class="car-meta">
+          <span>⚙️ Automatic</span>
+          <span>👥 5</span>
+          <span>💼 2</span>
+          <span class="rating">★ 4.7</span>
+        </div>
+        <div class="car-footer">
+          <div class="car-price">$70 <small>/day</small></div>
+          <button class="rent-btn">Rent Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="car-card">
+      <div class="car-type-badge">Minivan</div>
+      <div class="car-img-wrap">
+        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg" style="height:130px;width:100%">
+          <defs><linearGradient id="c2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#1a1a2e"/><stop offset="100%" stop-color="#0d0d1a"/></linearGradient></defs>
+          <ellipse cx="150" cy="118" rx="130" ry="8" fill="rgba(0,0,0,0.3)"/>
+          <path d="M25 88 L25 62 Q30 55 50 50 L100 40 Q130 34 158 33 L195 33 Q235 33 255 45 L270 60 L272 88 Z" fill="url(#c2)" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <path d="M72 65 Q80 44 110 38 L165 34 L178 65 Z" fill="rgba(80,140,200,0.6)"/>
+          <path d="M183 65 L192 34 L225 40 L250 58 L238 65 Z" fill="rgba(80,140,200,0.4)"/>
+          <circle cx="82" cy="100" r="18" fill="#111"/><circle cx="82" cy="100" r="14" fill="#2a2a3a"/><circle cx="82" cy="100" r="9" fill="#111"/>
+          <circle cx="228" cy="100" r="18" fill="#111"/><circle cx="228" cy="100" r="14" fill="#2a2a3a"/><circle cx="228" cy="100" r="9" fill="#111"/>
+          <rect x="27" y="75" width="18" height="8" rx="3" fill="rgba(232,255,71,0.6)"/>
+          <rect x="255" y="75" width="14" height="8" rx="3" fill="rgba(255,80,80,0.7)"/>
+        </svg>
+      </div>
+      <div class="car-info">
+        <div class="car-name">Alphard</div>
+        <div class="car-meta">
+          <span>⚙️ Automatic</span>
+          <span>👥 8</span>
+          <span>💼 3</span>
+          <span class="rating">★ 4.8</span>
+        </div>
+        <div class="car-footer">
+          <div class="car-price">$95 <small>/day</small></div>
+          <button class="rent-btn">Rent Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="car-card">
+      <div class="car-type-badge">SUV</div>
+      <div class="car-img-wrap">
+        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg" style="height:130px;width:100%">
+          <defs><linearGradient id="c3" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#e8e8e8"/><stop offset="100%" stop-color="#a0a0a0"/></linearGradient></defs>
+          <ellipse cx="150" cy="118" rx="130" ry="8" fill="rgba(0,0,0,0.3)"/>
+          <path d="M22 88 L22 58 Q28 50 48 44 L100 35 Q132 30 158 29 L192 29 Q230 30 252 42 L270 58 L272 88 Z" fill="url(#c3)" stroke="rgba(0,0,0,0.1)" stroke-width="1"/>
+          <path d="M70 62 Q80 40 112 34 L165 30 L180 62 Z" fill="rgba(100,150,200,0.6)"/>
+          <path d="M185 62 L194 31 L228 38 L252 55 L240 62 Z" fill="rgba(100,150,200,0.4)"/>
+          <circle cx="80" cy="100" r="20" fill="#111"/><circle cx="80" cy="100" r="15" fill="#444"/><circle cx="80" cy="100" r="10" fill="#111"/>
+          <circle cx="230" cy="100" r="20" fill="#111"/><circle cx="230" cy="100" r="15" fill="#444"/><circle cx="230" cy="100" r="10" fill="#111"/>
+        </svg>
+      </div>
+      <div class="car-info">
+        <div class="car-name">Lexus NX-300</div>
+        <div class="car-meta">
+          <span>⚙️ Automatic</span>
+          <span>👥 5</span>
+          <span>💼 4</span>
+          <span class="rating">★ 4.7</span>
+        </div>
+        <div class="car-footer">
+          <div class="car-price">$88 <small>/day</small></div>
+          <button class="rent-btn">Rent Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 4 -->
+    <div class="car-card">
+      <div class="car-type-badge">Sedan</div>
+      <div class="car-img-wrap">
+        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg" style="height:130px;width:100%">
+          <defs><linearGradient id="c4" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#3a4a2a"/><stop offset="100%" stop-color="#1a2a10"/></linearGradient></defs>
+          <ellipse cx="150" cy="118" rx="130" ry="8" fill="rgba(0,0,0,0.3)"/>
+          <path d="M28 88 L28 68 Q33 62 55 56 L108 46 Q135 40 158 39 L188 39 Q220 39 245 50 L265 62 L268 88 Z" fill="url(#c4)"/>
+          <path d="M78 68 Q85 50 112 44 L165 40 L178 68 Z" fill="rgba(80,160,120,0.5)"/>
+          <path d="M182 68 L190 40 L222 46 L245 60 L232 68 Z" fill="rgba(80,160,120,0.4)"/>
+          <circle cx="85" cy="100" r="18" fill="#111"/><circle cx="85" cy="100" r="14" fill="#2a3a2a"/><circle cx="85" cy="100" r="9" fill="#111"/>
+          <circle cx="225" cy="100" r="18" fill="#111"/><circle cx="225" cy="100" r="14" fill="#2a3a2a"/><circle cx="225" cy="100" r="9" fill="#111"/>
+        </svg>
+      </div>
+      <div class="car-info">
+        <div class="car-name">Camry</div>
+        <div class="car-meta">
+          <span>⚙️ Automatic</span>
+          <span>👥 5</span>
+          <span>💼 3</span>
+          <span class="rating">★ 4.9</span>
+        </div>
+        <div class="car-footer">
+          <div class="car-price">$50 <small>/day</small></div>
+          <button class="rent-btn">Rent Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 5 -->
+    <div class="car-card">
+      <div class="car-type-badge">Minivan</div>
+      <div class="car-img-wrap">
+        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg" style="height:130px;width:100%">
+          <defs><linearGradient id="c5" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#b0b0b0"/><stop offset="100%" stop-color="#606060"/></linearGradient></defs>
+          <ellipse cx="150" cy="118" rx="130" ry="8" fill="rgba(0,0,0,0.3)"/>
+          <path d="M25 88 L25 58 Q30 50 50 44 L105 35 Q135 30 158 29 L198 29 Q232 30 255 44 L270 58 L272 88 Z" fill="url(#c5)"/>
+          <path d="M72 62 Q80 42 112 36 L168 30 L182 62 Z" fill="rgba(100,150,200,0.55)"/>
+          <path d="M186 62 L196 31 L228 38 L252 56 L240 62 Z" fill="rgba(100,150,200,0.4)"/>
+          <circle cx="82" cy="100" r="20" fill="#111"/><circle cx="82" cy="100" r="15" fill="#555"/><circle cx="82" cy="100" r="10" fill="#111"/>
+          <circle cx="228" cy="100" r="20" fill="#111"/><circle cx="228" cy="100" r="15" fill="#555"/><circle cx="228" cy="100" r="10" fill="#111"/>
+        </svg>
+      </div>
+      <div class="car-info">
+        <div class="car-name">Innova</div>
+        <div class="car-meta">
+          <span>🔧 Manual</span>
+          <span>👥 7</span>
+          <span>💼 3</span>
+          <span class="rating">★ 4.5</span>
+        </div>
+        <div class="car-footer">
+          <div class="car-price">$85 <small>/day</small></div>
+          <button class="rent-btn">Rent Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 6 -->
+    <div class="car-card">
+      <div class="car-type-badge">SUV</div>
+      <div class="car-img-wrap">
+        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg" style="height:130px;width:100%">
+          <defs><linearGradient id="c6" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#4a4a4a"/><stop offset="100%" stop-color="#1e1e1e"/></linearGradient></defs>
+          <ellipse cx="150" cy="118" rx="130" ry="8" fill="rgba(0,0,0,0.3)"/>
+          <path d="M20 88 L20 55 Q26 46 48 40 L102 31 Q132 26 158 25 L194 25 Q232 26 255 40 L272 56 L274 88 Z" fill="url(#c6)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+          <path d="M70 60 Q80 38 114 32 L168 26 L183 60 Z" fill="rgba(80,130,180,0.5)"/>
+          <path d="M187 60 L198 27 L230 34 L254 52 L242 60 Z" fill="rgba(80,130,180,0.35)"/>
+          <circle cx="80" cy="100" r="20" fill="#0a0a0a"/><circle cx="80" cy="100" r="15" fill="#333"/><circle cx="80" cy="100" r="10" fill="#0a0a0a"/>
+          <circle cx="230" cy="100" r="20" fill="#0a0a0a"/><circle cx="230" cy="100" r="15" fill="#333"/><circle cx="230" cy="100" r="10" fill="#0a0a0a"/>
+          <rect x="22" y="72" width="16" height="7" rx="3" fill="rgba(232,255,71,0.7)"/>
+          <rect x="258" y="72" width="12" height="7" rx="3" fill="rgba(255,60,60,0.7)"/>
+        </svg>
+      </div>
+      <div class="car-info">
+        <div class="car-name">Toyota Fortuner</div>
+        <div class="car-meta">
+          <span>⚙️ Automatic</span>
+          <span>👥 7</span>
+          <span>💼 4</span>
+          <span class="rating">★ 4.8</span>
+        </div>
+        <div class="car-footer">
+          <div class="car-price">$75 <small>/day</small></div>
+          <button class="rent-btn">Rent Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 7 -->
+    <div class="car-card">
+      <div class="car-type-badge">MPV</div>
+      <div class="car-img-wrap">
+        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg" style="height:130px;width:100%">
+          <defs><linearGradient id="c7" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#d8d8d8"/><stop offset="100%" stop-color="#909090"/></linearGradient></defs>
+          <ellipse cx="150" cy="118" rx="130" ry="8" fill="rgba(0,0,0,0.3)"/>
+          <path d="M28 88 L28 65 Q34 56 55 50 L108 40 Q135 34 158 33 L190 33 Q222 34 244 46 L265 62 L268 88 Z" fill="url(#c7)" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>
+          <path d="M76 66 Q84 48 114 42 L165 34 L180 66 Z" fill="rgba(100,160,220,0.6)"/>
+          <path d="M184 66 L192 34 L223 40 L246 58 L233 66 Z" fill="rgba(100,160,220,0.45)"/>
+          <circle cx="84" cy="100" r="18" fill="#111"/><circle cx="84" cy="100" r="14" fill="#444"/><circle cx="84" cy="100" r="9" fill="#111"/>
+          <circle cx="226" cy="100" r="18" fill="#111"/><circle cx="226" cy="100" r="14" fill="#444"/><circle cx="226" cy="100" r="9" fill="#111"/>
+        </svg>
+      </div>
+      <div class="car-info">
+        <div class="car-name">Innova Zenix</div>
+        <div class="car-meta">
+          <span>⚙️ Auto/Manual</span>
+          <span>👥 6</span>
+          <span>💼 3</span>
+          <span class="rating">★ 4.6</span>
+        </div>
+        <div class="car-footer">
+          <div class="car-price">$60 <small>/day</small></div>
+          <button class="rent-btn">Rent Now</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card 8 -->
+    <div class="car-card">
+      <div class="car-type-badge">SUV</div>
+      <div class="car-img-wrap">
+        <svg viewBox="0 0 300 130" xmlns="http://www.w3.org/2000/svg" style="height:130px;width:100%">
+          <defs><linearGradient id="c8" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#f0f0f0"/><stop offset="100%" stop-color="#c0c0c0"/></linearGradient></defs>
+          <ellipse cx="150" cy="118" rx="130" ry="8" fill="rgba(0,0,0,0.3)"/>
+          <path d="M24 88 L24 60 Q30 52 52 46 L104 36 Q132 30 158 29 L192 29 Q228 30 250 44 L268 58 L270 88 Z" fill="url(#c8)" stroke="rgba(0,0,0,0.08)" stroke-width="1"/>
+          <path d="M72 63 Q81 44 114 38 L167 30 L182 63 Z" fill="rgba(120,170,220,0.55)"/>
+          <path d="M186 63 L196 30 L226 37 L250 54 L238 63 Z" fill="rgba(120,170,220,0.4)"/>
+          <circle cx="82" cy="100" r="19" fill="#111"/><circle cx="82" cy="100" r="14" fill="#555"/><circle cx="82" cy="100" r="9" fill="#111"/>
+          <circle cx="228" cy="100" r="19" fill="#111"/><circle cx="228" cy="100" r="14" fill="#555"/><circle cx="228" cy="100" r="9" fill="#111"/>
+        </svg>
+      </div>
+      <div class="car-info">
+        <div class="car-name">Terios</div>
+        <div class="car-meta">
+          <span>⚙️ Auto/Manual</span>
+          <span>👥 5</span>
+          <span>💼 2</span>
+          <span class="rating">★ 4.6</span>
+        </div>
+        <div class="car-footer">
+          <div class="car-price">$70 <small>/day</small></div>
+          <button class="rent-btn">Rent Now</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINATIONS -->
+<section class="destinations">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Global Coverage</div>
+      <div class="section-title">Discover Car Rentals Worldwide</div>
+      <div class="section-sub">A diverse and extensive range of rental cars in major cities.</div>
+    </div>
+  </div>
+  <div class="dest-scroll">
+    <div class="dest-chip">🇩🇪 Car Rental in Hamburg</div>
+    <div class="dest-chip">🇮🇩 Car Rental in Jakarta</div>
+    <div class="dest-chip">🇮🇩 Car Rental in Bali</div>
+    <div class="dest-chip">🇦🇺 Car Rental in Sydney</div>
+    <div class="dest-chip">🇺🇸 Car Rental in New York</div>
+    <div class="dest-chip">🇰🇷 Car Rental in Seoul</div>
+    <div class="dest-chip">🇩🇪 Car Rental in Berlin</div>
+    <div class="dest-chip">🇩🇪 Car Rental in Munich</div>
+    <div class="dest-chip">🇫🇷 Car Rental in Paris</div>
+    <div class="dest-chip">🇺🇸 Car Rental in Los Angeles</div>
+    <div class="dest-chip">🇬🇧 Car Rental in Liverpool</div>
+    <div class="dest-chip">🇬🇧 Car Rental in Glasgow</div>
+    <div class="dest-chip">🇬🇧 Car Rental in Birmingham</div>
+    <div class="dest-chip">🇯🇵 Car Rental in Tokyo</div>
+    <div class="dest-chip">🇸🇬 Car Rental in Singapore</div>
+  </div>
+</section>
+
+<!-- DEALS -->
+<section>
+  <div class="section-header">
+    <div>
+      <div class="section-label">Promotions</div>
+      <div class="section-title">Enjoy Extra Miles With Our Best Deal</div>
+    </div>
+    <a href="#" class="see-all">See All →</a>
+  </div>
+  <div class="deals-grid">
+    <div class="deal-card">
+      <div class="bg"></div>
+      <div class="deal-badge">Valid 12–19 Jan</div>
+      <div class="deal-card-content">
+        <div class="deal-pct">40%</div>
+        <div class="deal-title">Experience the Holidays with Festive Promotions</div>
+      </div>
+    </div>
+    <div class="deal-card">
+      <div class="bg"></div>
+      <div class="deal-badge">Valid 15–22 Jan</div>
+      <div class="deal-card-content">
+        <div class="deal-pct">65%</div>
+        <div class="deal-title">Unlock Online-Only Discounts for a Seamless Booking Experience</div>
+      </div>
+    </div>
+    <div class="deal-card">
+      <div class="bg"></div>
+      <div class="deal-badge">Valid 18–25 Jan</div>
+      <div class="deal-card-content">
+        <div class="deal-pct">30%</div>
+        <div class="deal-title">Weekend Getaway Special — Escape the Ordinary</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRANDS -->
+<div class="brands">
+  <div class="brands-row">
+    <div class="brand-name">HELLDESIGN</div>
+    <div class="brand-name">DoorDash</div>
+    <div class="brand-name">coinbase</div>
+    <div class="brand-name">Airbnb</div>
+    <div class="brand-name">pendo</div>
+    <div class="brand-name">Freshsave</div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section>
+  <div class="section-header">
+    <div>
+      <div class="section-label">Simple Process</div>
+      <div class="section-title">How It Works</div>
+      <div class="section-sub">Book your perfect car in just a few steps.</div>
+    </div>
+  </div>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num">01</div>
+      <div class="how-icon">📍</div>
+      <h3>Choose Location</h3>
+      <p>Select your preferred pickup location from 120+ cities worldwide.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">02</div>
+      <div class="how-icon">🚗</div>
+      <h3>Pick Your Car</h3>
+      <p>Browse our curated fleet and choose the perfect vehicle for your journey.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">03</div>
+      <div class="how-icon">💳</div>
+      <h3>Book & Pay</h3>
+      <p>Secure booking with instant confirmation and flexible payment options.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num">04</div>
+      <div class="how-icon">🎉</div>
+      <h3>Enjoy the Ride</h3>
+      <p>Pick up your car and enjoy the freedom of the open road.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner">
+  <div>
+    <h2>Beyond Accommodation,<br>Creating Memories of a Lifetime.</h2>
+    <p>Book your perfect stay with us and experience journeys that stay with you forever.</p>
+  </div>
+  <a href="#search" class="btn-primary" style="font-size:1rem; padding:16px 32px;">
+    Booking Now →
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo" style="margin-bottom:12px;display:inline-flex">⬡ Horiz<span>one</span></a>
+      <p>A platform that makes travelers empowered with cutting edge, functional, and stylish bags that elevate every adventure.</p>
+      <div class="newsletter">
+        <input type="email" placeholder="Get updates…">
+        <button>Subscribe</button>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>About</h4>
+      <ul>
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Return</a></li>
+        <li><a href="#">Career</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Support</h4>
+      <ul>
+        <li><a href="#">Contact Us</a></li>
+        <li><a href="#">Return</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Get Updates</h4>
+      <ul>
+        <li><a href="#">🐦 Twitter</a></li>
+        <li><a href="#">📘 Facebook</a></li>
+        <li><a href="#">📸 Instagram</a></li>
+        <li><a href="#">💼 LinkedIn</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2024 Horizone. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Filter buttons
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // Mobile menu
+  function toggleMenu() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
+
+  // Smooth scroll for CTA
+  document.querySelectorAll('a[href="#search"], a[href="#cars"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href')).scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Intersection Observer for card animations
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.animationDelay = (i * 0.07) + 's';
+        entry.target.style.animation = 'fadeUp 0.5s cubic-bezier(0.16,1,0.3,1) both';
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.car-card, .deal-card, .how-card').forEach(card => {
+    observer.observe(card);
+  });
+</script>
+</body>
+</html>
